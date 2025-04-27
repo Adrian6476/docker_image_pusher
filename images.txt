@@ -6,3 +6,4 @@
 #--platform=linux/arm64 xiaoyaliu/alist
 # 添加 ghcr.io/open-webui/open-webui:cuda
 ghcr.io/open-webui/open-webui:cuda
+nextcloud
