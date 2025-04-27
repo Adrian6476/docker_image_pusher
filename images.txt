@@ -8,4 +8,4 @@
 ghcr.io/open-webui/open-webui:cuda
 nextcloud
 mariadb
-Redis
+redis
