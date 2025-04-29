@@ -11,4 +11,5 @@
 #redis
 #redis:8.0-rc1-alpine
 #nextcloud:29.0.16-fpm-alpine
-nextcloud:29.0.16-apache
+#nextcloud:29.0.16-apache
+ghcr.io/github/github-mcp-server
