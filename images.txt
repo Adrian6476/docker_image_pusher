@@ -5,11 +5,11 @@
 # 支持指定架构
 #--platform=linux/arm64 xiaoyaliu/alist
 # 添加 ghcr.io/open-webui/open-webui:cuda
-#ghcr.io/open-webui/open-webui:cuda
+ghcr.io/open-webui/open-webui:cuda
 #nextcloud
 #mariadb
 #redis
 #redis:8.0-rc1-alpine
 #nextcloud:29.0.16-fpm-alpine
-nextcloud:30.0.10-apache
+#nextcloud:30.0.10-apache
 #ghcr.io/github/github-mcp-server
