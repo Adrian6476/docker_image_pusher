@@ -13,3 +13,7 @@ ghcr.io/open-webui/open-webui:cuda
 #nextcloud:29.0.16-fpm-alpine
 #nextcloud:30.0.10-apache
 #ghcr.io/github/github-mcp-server
+golang:1.22.4-alpine
+postgres:15-alpine
+redis:7-alpine
+nats:2.10-alpine
