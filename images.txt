@@ -21,9 +21,4 @@
 #nats:2.10-alpine
 #gcr.io/distroless/static-debian12:nonroot
 
-# For portfolio-management-system on Apple Silicon Mac 使用 linux/arm64 兼容镜像
---platform=linux/arm64 golang:1.22.4-alpine
---platform=linux/arm64 postgres:15-alpine
---platform=linux/arm64 redis:7-alpine
---platform=linux/arm64 nats:2.10-alpine
---platform=linux/arm64 gcr.io/distroless/static-debian12:nonroot
+docker.io/library/node:18-alpine
