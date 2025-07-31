@@ -21,4 +21,4 @@
 #nats:2.10-alpine
 #gcr.io/distroless/static-debian12:nonroot
 
-docker.io/library/node:18-alpine
+node:18-alpine
