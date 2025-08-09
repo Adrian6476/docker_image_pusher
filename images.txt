@@ -5,7 +5,7 @@
 # 支持指定架构
 #--platform=linux/arm64 xiaoyaliu/alist
 # 添加 ghcr.io/open-webui/open-webui:cuda
-ghcr.io/open-webui/open-webui:cuda
+#ghcr.io/open-webui/open-webui:cuda
 #nextcloud
 #mariadb
 #redis
@@ -22,3 +22,7 @@ ghcr.io/open-webui/open-webui:cuda
 #gcr.io/distroless/static-debian12:nonroot
 
 #node:18-alpine
+
+# SearXNG
+docker.io/searxng/searxng:latest
+docker.io/valkey/valkey:8-alpine
