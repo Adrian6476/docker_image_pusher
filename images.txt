@@ -27,4 +27,4 @@
 #docker.io/searxng/searxng:latest
 #docker.io/valkey/valkey:8-alpine
 
-registry.cn-hangzhou.aliyuncs.com/ollama/qwen:30b
+ai/qwen3:30B-A3B-Q4_K_M
