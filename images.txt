@@ -12,7 +12,7 @@ ghcr.io/open-webui/open-webui:cuda
 #redis:8.0-rc1-alpine
 #nextcloud:29.0.16-fpm-alpine
 #nextcloud:30.0.10-apache
-ghcr.io/github/github-mcp-server
+#ghcr.io/github/github-mcp-server
 
 # For portfolio-management-system
 #golang:1.22.4-alpine
