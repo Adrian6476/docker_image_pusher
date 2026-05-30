@@ -44,11 +44,17 @@ jobs:
               echo "Checking: $image"
 
               # Inspect the remote manifest without pulling the image
-              current_digest=$(skopeo inspect --no-creds "docker://$image" 2>/dev/null \
-                  | jq -r '.Digest // empty' || true)
+              skopeo_output=$(skopeo inspect --no-creds "docker://$image" 2>&1)
+              skopeo_exit=$?
+              if [ $skopeo_exit -ne 0 ]; then
+                  echo "  ⚠ Could not retrieve digest for $image – skipping"
+                  echo "    skopeo error: $skopeo_output"
+                  continue
+              fi
+              current_digest=$(echo "$skopeo_output" | jq -r '.Digest // empty')
 
               if [ -z "$current_digest" ]; then
-                  echo "  ⚠ Could not retrieve digest for $image – skipping"
+                  echo "  ⚠ Digest field missing in skopeo output for $image – skipping"
                   continue
               fi
 
@@ -62,9 +68,11 @@ jobs:
               new_digests=$(echo "$new_digests" \
                   | jq --arg img "$image" --arg d "$current_digest" '.[$img] = $d')
 
-              if [ "$current_digest" != "$stored_digest" ]; then
+              if [ "$current_digest" != "$stored_digest" ] && [ -n "$stored_digest" ]; then
                   echo "  ✅ Update detected for $image"
                   UPDATED=true
+              elif [ -z "$stored_digest" ]; then
+                  echo "  📝 First-time record for $image (no update triggered)"
               else
                   echo "  ✓ No change"
               fi
@@ -92,6 +100,6 @@ jobs:
               owner: context.repo.owner,
               repo:  context.repo.repo,
               workflow_id: 'docker.yaml',
-              ref: 'main'
+              ref: context.payload.repository.default_branch ?? 'main'
             });
             core.info('Push workflow triggered because monitored images were updated.');
