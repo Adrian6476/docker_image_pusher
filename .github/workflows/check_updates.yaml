@@ -1,0 +1,97 @@
+name: Check Image Updates
+
+on:
+  schedule:
+    # Runs every 6 hours (UTC). Adjust as needed.
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  check:
+    name: Check for upstream updates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Check image digests
+        id: check
+        run: |
+          set -euo pipefail
+
+          DIGEST_FILE="digests.json"
+          UPDATED=false
+
+          # Load existing digests
+          existing_digests=$(cat "$DIGEST_FILE")
+          new_digests="{}"
+
+          while IFS= read -r line || [ -n "$line" ]; do
+              # Skip empty lines and comments
+              [[ -z "$line" ]] && continue
+              echo "$line" | grep -q '^\s*#' && continue
+
+              # Strip optional --platform=... prefix to get the image reference
+              image=$(echo "$line" | awk '{print $NF}')
+              # Strip @sha256:... digest pins if present
+              image="${image%%@*}"
+
+              echo "Checking: $image"
+
+              # Inspect the remote manifest without pulling the image
+              current_digest=$(skopeo inspect --no-creds "docker://$image" 2>/dev/null \
+                  | jq -r '.Digest // empty' || true)
+
+              if [ -z "$current_digest" ]; then
+                  echo "  ⚠ Could not retrieve digest for $image – skipping"
+                  continue
+              fi
+
+              echo "  Current digest : $current_digest"
+
+              stored_digest=$(echo "$existing_digests" \
+                  | jq -r --arg img "$image" '.[$img] // empty')
+              echo "  Stored digest  : ${stored_digest:-<none>}"
+
+              # Record new digest
+              new_digests=$(echo "$new_digests" \
+                  | jq --arg img "$image" --arg d "$current_digest" '.[$img] = $d')
+
+              if [ "$current_digest" != "$stored_digest" ]; then
+                  echo "  ✅ Update detected for $image"
+                  UPDATED=true
+              else
+                  echo "  ✓ No change"
+              fi
+
+          done < monitor.txt
+
+          echo "$new_digests" | jq '.' > "$DIGEST_FILE"
+          echo "updated=$UPDATED" >> "$GITHUB_OUTPUT"
+
+      - name: Commit updated digests
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add digests.json
+          git commit -m "chore: update image digests [skip ci]"
+          git push
+
+      - name: Trigger push workflow
+        if: steps.check.outputs.updated == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              workflow_id: 'docker.yaml',
+              ref: 'main'
+            });
+            core.info('Push workflow triggered because monitored images were updated.');

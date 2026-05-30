@@ -1,0 +1,11 @@
+# Images to monitor for upstream updates
+# Same format as images.txt — one image per line, # for comments
+# When any image listed here gets a new digest, the push workflow is
+# triggered automatically to re-push all images in images.txt.
+#
+# Examples:
+#   nginx:latest
+#   --platform=linux/amd64 ghcr.io/open-webui/open-webui:cuda
+#   gcr.io/google-containers/pause:3.9
+
+ghcr.io/open-webui/open-webui:cuda

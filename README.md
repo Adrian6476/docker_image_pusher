@@ -78,3 +78,29 @@ xiaoyaliu/alist
 修改/.github/workflows/docker.yaml文件
 添加 schedule即可定时执行(此处cron使用UTC时区)
 ![](doc/定时执行.png)
+
+### 自动监控镜像更新 (Auto Monitor Image Updates)
+
+当上游镜像发布新版本时，自动触发重新推送。
+
+**配置步骤：**
+
+1. 打开 `monitor.txt`，将需要监控更新的镜像添加进去（格式与 `images.txt` 相同）：
+   ```
+   nginx:latest
+   ghcr.io/open-webui/open-webui:cuda
+   ```
+
+2. `digests.json` 用于记录上次检查时各镜像的 digest，**请勿手动修改**，由 Action 自动维护。
+
+3. `.github/workflows/check_updates.yaml` 每 6 小时自动运行一次，逐一检查 `monitor.txt` 中的镜像是否有新 digest：
+   - 若有更新 → 自动提交新 digest 并触发 `docker.yaml`（重新推送 `images.txt` 中的所有镜像）。
+   - 若无更新 → 不做任何操作。
+
+4. 如需修改检查频率，编辑 `.github/workflows/check_updates.yaml` 中的 `cron` 表达式（使用 UTC 时区）：
+   ```yaml
+   schedule:
+     - cron: '0 */6 * * *'  # 每 6 小时
+   ```
+
+> **注意：** 监控只检测镜像 digest 变化（即内容变化），`monitor.txt` 中的镜像无需与 `images.txt` 完全一致，可以只列出关心的关键镜像。
