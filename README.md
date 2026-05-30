@@ -104,3 +104,5 @@ xiaoyaliu/alist
    ```
 
 > **注意：** 监控只检测镜像 digest 变化（即内容变化），`monitor.txt` 中的镜像无需与 `images.txt` 完全一致，可以只列出关心的关键镜像。
+
+> **恢复 digests.json：** 如果 `digests.json` 损坏或需要重置，将文件内容清空为 `{}` 并提交即可。下次 Check Image Updates 运行时会重新记录所有 digest，但不会触发推送（需等到下次真正更新时才触发）。
