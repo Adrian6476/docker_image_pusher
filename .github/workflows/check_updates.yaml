@@ -82,13 +82,23 @@ jobs:
           echo "$new_digests" | jq '.' > "$DIGEST_FILE"
           echo "updated=$UPDATED" >> "$GITHUB_OUTPUT"
 
+          # "changed" covers both first-time baselines and actual digest
+          # changes, so the baseline always gets persisted even when it
+          # doesn't warrant triggering a push.
+          if git diff --quiet -- "$DIGEST_FILE"; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Commit updated digests
-        if: steps.check.outputs.updated == 'true'
+        if: steps.check.outputs.changed == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add digests.json
           git commit -m "chore: update image digests [skip ci]"
+          git pull --rebase
           git push
 
       - name: Trigger push workflow
