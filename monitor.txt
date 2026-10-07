@@ -9,3 +9,4 @@
 #   gcr.io/google-containers/pause:3.9
 
 ghcr.io/open-webui/open-webui:cuda
+ghcr.io/github/github-mcp-server
