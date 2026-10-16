@@ -1,4 +1,4 @@
 {
-  "ghcr.io/open-webui/open-webui:cuda": "sha256:3c58a50401d9996cbc7073db54a248fe5431f17da8a0a04eadc394f9a6103539",
+  "ghcr.io/open-webui/open-webui:cuda": "sha256:0e3ab14446a1a6c980a3e4a23ad4be45723f23226b7b5b94d576b3a54b99d0e6",
   "ghcr.io/github/github-mcp-server": "sha256:ffced0d76e77428532a2ced185516992d77fd146d69eec2f244e6237d1a97796"
 }
